@@ -26,10 +26,11 @@ void setMcpOutput(char data){
 }
 
 char getMcpInput(){
-  Wire.requestFrom(0x20,1);
+  Wire.beginTransmission(0x20);
   Wire.write(0x12);
-  char data = Wire.read();
   Wire.endTransmission();
+  Wire.requestFrom(0x20,1);
+  char data = Wire.read();
   return data;
 }
 
