@@ -1,7 +1,5 @@
 #include <Wire.h>
-#define HOST_NAME "ESP-IO"
-//#include <ESP8266WiFi.h>
-#include <Ethernet.h>
+#include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
 
@@ -17,18 +15,13 @@
 
 byte mac[] ={0xDE,0xED,0xBA,0xFE,0xFE,0xED};
 
-//WiFiClient espClient;
-//PubSubClient client(espClient);
-
-
-EthernetClient ethClient;
-PubSubClient client(ethClient);
-
+WiFiClient espClient;
+PubSubClient client(espClient);
 
 void setup_wifi(){
   delay(10);
-  //WiFi.begin(SSID,PASSWORD);
-  Ethernet.begin(mac);
+  WiFi.begin(SSID,PASSWORD);
+
 
   /*while(WiFi.status()!= WL_CONNECTED){
     delay(500);
@@ -49,7 +42,7 @@ void reconnect(){
 }
 
 void setup() {
-  Wire.begin();
+  Wire.begin(2,0);
 
   Wire.beginTransmission(MCP_ADDRESS);
   Wire.write(0x00); //start register
@@ -63,12 +56,12 @@ void setup() {
   Wire.write(0xff); //set pull ups 
   Wire.endTransmission();
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Start Programm");
 
-  setup_wifi();
-  client.setServer(MQTT_SERVER,1883);
-  client.setCallback(callback);
+  //setup_wifi();
+  //client.setServer(MQTT_SERVER,1883);
+  //client.setCallback(callback);
 }
 
 void setMcpOutput(char data){
@@ -88,6 +81,8 @@ char getMcpInput(){
 }
 
 void loop() {
-  setMcpOutput(getMcpInput());
+  char data = getMcpInput();
+  setMcpOutput(data);
+  Serial.println(data,HEX);
   delay(500);
 }
